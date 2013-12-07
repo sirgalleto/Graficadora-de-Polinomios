@@ -1,12 +1,15 @@
 package graficadora.de.polinomios;
 
+import graficadora.logica.Derivadora;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.util.HashMap;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 public class GraficadoraPolinomios extends javax.swing.JApplet {
@@ -15,6 +18,7 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
     private JTextField[] jTOk;
     private double[] coeficientes;
     private boolean graficando = false;
+    private HashMap<Point, Integer> cartesianas;
 
     @Override
     public void init() {
@@ -45,17 +49,18 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
             });
         } catch (Exception ex) {
             ex.printStackTrace();
-        }       
+        }
         this.jBGraficar.setVisible(false);
         this.jBReiniciar.setVisible(false);
         jPanel2.setLayout(new GridLayout(0, 2));
-        
+
     }
-    
-    void ajustarMitadScroll(){
-        Point centro = new Point((this.jPGrafica.getWidth()-this.jSPGrafica.getWidth())/2,(this.jPGrafica.getHeight()-this.jSPGrafica.getHeight())/2 );
+
+    void ajustarMitadScroll() {
+        Point centro = new Point((this.jPGrafica.getWidth() - this.jSPGrafica.getWidth()) / 2, (this.jPGrafica.getHeight() - this.jSPGrafica.getHeight()) / 2);
         this.jSPGrafica.getViewport().setViewPosition(centro);
     }
+
     void inicializar() {
         g = this.jPGrafica.getGraphics();
         int px2 = this.jPGrafica.getWidth() / 2;
@@ -75,6 +80,7 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
             int[] xs = new int[this.jPGrafica.getWidth()];
             int[] ys = new int[this.jPGrafica.getWidth()];
             double[] arreglo = this.coeficientes;
+            cartesianas = new HashMap<Point, Integer>();
             for (int punto = 0; punto < this.jPGrafica.getWidth(); punto++) {
                 xs[punto] = punto;
                 int xCalc = punto - py2;
@@ -82,7 +88,17 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
                 for (int coeficientes = 0; coeficientes < arreglo.length; coeficientes++) {
                     sum += arreglo[coeficientes] * Math.pow(xCalc, coeficientes);
                 }
-                ys[punto] = px2 - sum;
+                int res = px2 - sum;
+                ys[punto] = res;
+                g.setColor(Color.red);
+                g.fillOval(punto, res, 4, 4);
+                for (int i = punto - 4; i <= punto + 4; i++) {
+                    for (int j = res - 4; j <= res + 4; j++) {
+                        cartesianas.put(new Point(i, j), xCalc);
+                    }
+                }
+                g.setColor(Color.blue);
+                cartesianas.put(new Point(punto, res), xCalc);
             }
             g.drawPolyline(xs, ys, this.jPGrafica.getWidth());
         }
@@ -100,6 +116,15 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
         jPGrafica = new javax.swing.JPanel();
         jBReiniciar = new javax.swing.JButton();
         jBGraficar = new javax.swing.JButton();
+
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                formMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                formMouseReleased(evt);
+            }
+        });
 
         jTFGradoEcuacion.setText("Inserta el grado de la ecuación");
 
@@ -132,21 +157,34 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
         );
 
         jSPGrafica.addAncestorListener(new javax.swing.event.AncestorListener() {
-            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
             }
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
                 jSPGraficaAncestorAdded(evt);
             }
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
             }
         });
 
         jPGrafica.setBackground(new java.awt.Color(255, 255, 255));
         jPGrafica.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPGrafica.setPreferredSize(new java.awt.Dimension(1000, 1000));
+        jPGrafica.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jPGraficaMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jPGraficaMouseReleased(evt);
+            }
+        });
         jPGrafica.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentMoved(java.awt.event.ComponentEvent evt) {
                 jPGraficaComponentMoved(evt);
+            }
+        });
+        jPGrafica.addContainerListener(new java.awt.event.ContainerAdapter() {
+            public void componentRemoved(java.awt.event.ContainerEvent evt) {
+                jPGraficaComponentRemoved(evt);
             }
         });
 
@@ -208,27 +246,29 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jBOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBOkActionPerformed
-        try {
-            jTOk = new JTextField[Integer.parseInt(this.jTFGradoEcuacion.getText())+1];
-            this.jPanel2.remove(this.jBOk);
-            this.jPanel2.remove(this.jTFGradoEcuacion);
-            jPanel2.setLayout(new GridLayout(0, this.jTOk.length));
-            for (int x = 0; x < jTOk.length; x++) {
-                jTOk[x] = new JTextField();
-                jTOk[x].setText("x^" + x);
-                this.jPanel2.add(jTOk[x]);
-            }
-            this.jBGraficar.setVisible(true);
-            this.jBReiniciar.setVisible(true);
-        } catch (NumberFormatException ex) {
+        if (Integer.parseInt(this.jTFGradoEcuacion.getText()) >= 0) {
 
+            try {
+                jTOk = new JTextField[Integer.parseInt(this.jTFGradoEcuacion.getText()) + 1];
+                this.jPanel2.remove(this.jBOk);
+                this.jPanel2.remove(this.jTFGradoEcuacion);
+                jPanel2.setLayout(new GridLayout(0, this.jTOk.length));
+                for (int x = 0; x < jTOk.length; x++) {
+                    jTOk[x] = new JTextField();
+                    jTOk[x].setText("x^" + x);
+                    this.jPanel2.add(jTOk[x]);
+                }
+                this.jBGraficar.setVisible(true);
+                this.jBReiniciar.setVisible(true);
+            } catch (NumberFormatException ex) {
+            }
         }
     }//GEN-LAST:event_jBOkActionPerformed
 
     private void jSPGraficaAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jSPGraficaAncestorAdded
         inicializar();
         ajustarMitadScroll();
-        
+
     }//GEN-LAST:event_jSPGraficaAncestorAdded
 
     private void jPGraficaComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jPGraficaComponentMoved
@@ -261,10 +301,37 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
             }
             inicializar();
         } catch (NumberFormatException ex) {
-
         }
     }//GEN-LAST:event_jBGraficarActionPerformed
 
+    private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
+
+    }//GEN-LAST:event_formMousePressed
+
+    private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
+
+    }//GEN-LAST:event_formMouseReleased
+
+    private void jPGraficaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPGraficaMousePressed
+        try {
+            if (jPGrafica.contains(evt.getPoint())) {
+
+                int pt = cartesianas.get(evt.getPoint());
+                double d = Derivadora.derivar(coeficientes, cartesianas.get(evt.getPoint()));
+                g.drawString("Pendiente: " + d, evt.getX() + 5, evt.getY() + 5);
+            }
+        } catch (NullPointerException npe) {
+        }
+    }//GEN-LAST:event_jPGraficaMousePressed
+
+    private void jPGraficaComponentRemoved(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_jPGraficaComponentRemoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPGraficaComponentRemoved
+
+    private void jPGraficaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPGraficaMouseReleased
+        g.clearRect(0, 0, jPGrafica.getWidth(), jPGrafica.getHeight());
+        inicializar();
+    }//GEN-LAST:event_jPGraficaMouseReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBGraficar;
