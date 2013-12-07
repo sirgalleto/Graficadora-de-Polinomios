@@ -213,7 +213,7 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
             jPanel2.setLayout(new GridLayout(0, this.jTOk.length));
             for (int x = 0; x < jTOk.length; x++) {
                 jTOk[x] = new JTextField();
-                jTOk[x].setText("Coeficiente " + x);
+                jTOk[x].setText("x^" + x);
                 this.jPanel2.add(jTOk[x]);
             }
             this.jBGraficar.setVisible(true);
@@ -249,6 +249,8 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
     private void jBGraficarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBGraficarActionPerformed
         try {
             this.graficando = true;
+            g.clearRect(0, 0, jPGrafica.getWidth(), jPGrafica.getHeight());
+
             coeficientes = new double[this.jTOk.length];
             for (int x = 0; x < this.coeficientes.length; x++) {
                 this.coeficientes[x] = Double.parseDouble(this.jTOk[x].getText());
