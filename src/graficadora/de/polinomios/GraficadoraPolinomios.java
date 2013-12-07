@@ -59,14 +59,20 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
             g.drawLine(px2-2,x,px2+2,x);
         }
         g.setColor(Color.blue);
-        int[] arreglo = {0,0,1};
+        int[] xs = new int[this.jPGrafica.getWidth()];
+        int[] ys = new int[this.jPGrafica.getWidth()];
+        double[] arreglo = {0,0,0,1/64.0};
         for(int punto = 0; punto < this.jPGrafica.getWidth();punto++){
+            xs[punto] = punto;
+            int xCalc = punto - py2;
+            int sum = 0;
             for(int coeficientes = 0; coeficientes <  arreglo.length; coeficientes++){
-               
-                
-               
-            }   
+               sum += arreglo[coeficientes] * Math.pow(xCalc, coeficientes);
+            }
+            ys[punto] = px2 - sum;
         }
+        
+        g.drawPolyline(xs, ys, this.jPGrafica.getWidth());
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -112,12 +118,12 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
         jScrollPane1.setViewportView(jPanel2);
 
         jScrollPane2.addAncestorListener(new javax.swing.event.AncestorListener() {
-            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
-            }
             public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
             }
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
                 jScrollPane2AncestorAdded(evt);
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
             }
         });
 
@@ -134,7 +140,7 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
         jPGrafica.setLayout(jPGraficaLayout);
         jPGraficaLayout.setHorizontalGroup(
             jPGraficaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 994, Short.MAX_VALUE)
         );
         jPGraficaLayout.setVerticalGroup(
             jPGraficaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
