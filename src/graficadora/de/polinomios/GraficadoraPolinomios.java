@@ -49,14 +49,17 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
             });
         } catch (Exception ex) {
             ex.printStackTrace();
-        }
-        Point punto = new Point(150, 250);
-        this.jScrollPane2.getViewport().setViewPosition(punto);
+        }       
         this.jBGraficar.setVisible(false);
         this.jBReiniciar.setVisible(false);
         jPanel2.setLayout(new GridLayout(0, 2));
+        
     }
-
+    
+    void ajustarMitadScroll(){
+        Point centro = new Point((this.jPGrafica.getWidth()-this.jSPGrafica.getWidth())/2,(this.jPGrafica.getHeight()-this.jSPGrafica.getHeight())/2 );
+        this.jSPGrafica.getViewport().setViewPosition(centro);
+    }
     void inicializar() {
         g = this.jPGrafica.getGraphics();
         int px2 = this.jPGrafica.getWidth() / 2;
@@ -98,7 +101,6 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
                 cartesianas.put(new Point(punto, res), xCalc);
                 ys[punto] = res;
             }
-
             g.drawPolyline(xs, ys, this.jPGrafica.getWidth());
         }
 
@@ -111,7 +113,7 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
         jPanel2 = new javax.swing.JPanel();
         jTFGradoEcuacion = new javax.swing.JTextField();
         jBOk = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        jSPGrafica = new javax.swing.JScrollPane();
         jPGrafica = new javax.swing.JPanel();
         jBReiniciar = new javax.swing.JButton();
         jBGraficar = new javax.swing.JButton();
@@ -146,11 +148,16 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
                 .addContainerGap(25, Short.MAX_VALUE))
         );
 
+<<<<<<< HEAD
         jScrollPane2.addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+=======
+        jSPGrafica.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+>>>>>>> 44d65effc17d833bfab0e78817952058eb3f9428
             }
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
-                jScrollPane2AncestorAdded(evt);
+                jSPGraficaAncestorAdded(evt);
             }
             public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
             }
@@ -184,7 +191,7 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
             .addGap(0, 994, Short.MAX_VALUE)
         );
 
-        jScrollPane2.setViewportView(jPGrafica);
+        jSPGrafica.setViewportView(jPGrafica);
 
         jBReiniciar.setText("Reiniciar");
         jBReiniciar.addActionListener(new java.awt.event.ActionListener() {
@@ -207,7 +214,7 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 804, Short.MAX_VALUE)
+                    .addComponent(jSPGrafica, javax.swing.GroupLayout.DEFAULT_SIZE, 804, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -220,7 +227,7 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jSPGrafica, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -247,9 +254,11 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
         }
     }//GEN-LAST:event_jBOkActionPerformed
 
-    private void jScrollPane2AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jScrollPane2AncestorAdded
+    private void jSPGraficaAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jSPGraficaAncestorAdded
         inicializar();
-    }//GEN-LAST:event_jScrollPane2AncestorAdded
+        ajustarMitadScroll();
+        
+    }//GEN-LAST:event_jSPGraficaAncestorAdded
 
     private void jPGraficaComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jPGraficaComponentMoved
         inicializar();
@@ -303,7 +312,7 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
     private javax.swing.JButton jBReiniciar;
     private javax.swing.JPanel jPGrafica;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jSPGrafica;
     private javax.swing.JTextField jTFGradoEcuacion;
     // End of variables declaration//GEN-END:variables
 }
