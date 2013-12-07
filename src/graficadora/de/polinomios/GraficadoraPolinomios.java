@@ -207,7 +207,7 @@ public class GraficadoraPolinomios extends javax.swing.JApplet {
 
     private void jBOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBOkActionPerformed
         try {
-            jTOk = new JTextField[Integer.parseInt(this.jTFGradoEcuacion.getText())];
+            jTOk = new JTextField[Integer.parseInt(this.jTFGradoEcuacion.getText())+1];
             this.jPanel2.remove(this.jBOk);
             this.jPanel2.remove(this.jTFGradoEcuacion);
             jPanel2.setLayout(new GridLayout(0, this.jTOk.length));
